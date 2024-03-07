@@ -1,8 +1,7 @@
 CC=g++
 
 all: bin bin/histogram bin/bank_mapper bin/row_bxor_mapper bin/bxor_manipulation_experiment bin/pagemap bin/hammering
-clean:
-	rm -rf bin/
+
 
 bin/histogram: src/histogram/histogram.cc src/shared.cc src/shared.hh src/params.hh src/util.hh
 	$(CC) -std=c++11 -g -O0 -o $@ src/histogram/histogram.cc src/util.hh src/shared.cc
@@ -31,3 +30,7 @@ bin/pagemap: src/pagemap.cc
 
 bin:
 	mkdir bin
+
+.PHONY: clean
+clean:
+	rm -rf bin/
