@@ -1,8 +1,18 @@
 #ifndef PARAMS_GUARD
 #define PARAMS_GUARD
 
+// Run This number of hammering operations, hammering across all rows, per iteration
+#ifndef NUM_HAMMER_ITERS
+#define NUM_HAMMER_ITERS 5000000
+#endif
+
 // Size of allocated buffer
-#define BUFFER_SIZE_MB 2048
+#ifndef BUFFER_SIZE_MB
+#define BUFFER_SIZE_MB 2048ULL
+#endif
+
+
+// IRRELEVANT PARAMETERS FROM x86 EXPERIMENTS:
 
 // Size of hugepages in system
 #define HUGE_PAGE_SIZE (1 << 21)

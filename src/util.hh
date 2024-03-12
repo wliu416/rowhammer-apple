@@ -37,6 +37,11 @@ static inline void lfence() {
   asm volatile("lfence");
 }
 
+static inline void arm_v8_memory_barrier(void) {
+  asm volatile ("DSB SY");
+  asm volatile ("ISB");
+}
+
 // Here is an example of using "rdtsc" and "lfence" to
 // measure the time it takes to access a block specified by its virtual address
 // The corresponding pseudo code is
@@ -65,6 +70,17 @@ static inline uint64_t measure_one_block_access_time(uint64_t addr)
 
 	return cycles;
 }
+
+
+static inline void arm_v8_cache_flush(uint64_t addr)
+{
+	//asm volatile ("":::);
+	// DC CIVAC May not work, consider IC IVAU?
+	asm volatile ("DC CIVAC, %0" :: "r"(addr));
+    asm volatile ("DSB SY");
+    asm volatile ("ISB");
+}
+
 
 
 static inline void one_block_access(uint64_t addr)

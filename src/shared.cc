@@ -62,18 +62,22 @@ uint64_t measure_bank_latency(uint64_t addr_A, uint64_t addr_B) {
   (*addr_A_ptr);
   // run clflush2(addr_A);
 
+  // Credit: IAIK - ARMageddon Paper
   //lfence();
+  arm_v8_memory_barrier();
+
   uint64_t t1 = get_timestamp();
 
   (*addr_A_ptr);
   (*addr_B_ptr);
 
   //lfence();
+  arm_v8_memory_barrier();
+
   uint64_t t2 = get_timestamp();
 
   return (uint64_t) t2-t1;
 }
-
 
 
 
