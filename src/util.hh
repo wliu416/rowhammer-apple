@@ -77,6 +77,7 @@ static inline void arm_v8_cache_flush(uint64_t addr)
 	//asm volatile ("":::);
 	// DC CIVAC May not work, consider IC IVAU?
 	asm volatile ("DC CIVAC, %0" :: "r"(addr));
+	asm volatile ("IC IVAU, %0" :: "r"(addr));
     asm volatile ("DSB SY");
     asm volatile ("ISB");
 }
