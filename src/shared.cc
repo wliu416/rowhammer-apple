@@ -1,7 +1,6 @@
 #include "shared.hh"
 #include "params.hh"
 #include "util.hh"
-#include <emmintrin.h>
 
 
 #define NS_PER_SEC (1000000000L)

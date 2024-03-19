@@ -16,7 +16,6 @@
 #include <unistd.h>
 #include <vector>
 #include <cstdint>
-#include <emmintrin.h>
 
 // Physical Page Number to Virtual Page Number Map
 extern std::map<uint64_t, uint64_t> PPN_VPN_map;
